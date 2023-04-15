@@ -11,13 +11,14 @@ struct RecordType
 // Fill out this structure
 struct HashType
 {
-
+    struct RecordType* record;
+    int isOccupied;
 };
 
 // Compute the hash function
 int hash(int x)
 {
-
+    return x % HASH_SIZE;
 }
 
 // parses input file to an integer array
@@ -78,9 +79,21 @@ void displayRecordsInHash(struct HashType *pHashArray, int hashSz)
 	int i;
 
 	for (i=0;i<hashSz;++i)
-	{
-		// if index is occupied with any records, print all
-	}
+    	{
+        	if (pHashArray[i].isOccupied)
+        	{
+           		printf("Index %d -> ", i);
+           	 	j = 0;
+            		while (pHashArray[i].record[j].id != -1)
+            		{
+                		printf("%d %c %d", pHashArray[i].record[j].id, pHashArray[i].record[j].name, pHashArray[i].record[j].order);
+                	if (pHashArray[i].record[j+1].id != -1)
+                   		printf(" -> ");
+                	++j;
+            	}
+            	printf("\n");
+        }
+    }
 }
 
 int main(void)
@@ -90,5 +103,11 @@ int main(void)
 
 	recordSz = parseData("input.txt", &pRecords);
 	printRecords(pRecords, recordSz);
-	// Your hash implementation
+	
+	for (int i = 0; i < recordSz; i++)
+    	{
+        	insertRecord(hashTable, pRecords[i]);
+    	}
+    	displayRecordsInHash(hashTable, HASH_SIZE);
+    	return 0;
 }
